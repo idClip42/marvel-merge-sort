@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+
+<head>
+    <title></title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <style>
+        .choice {
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #choices img {
+            vertical-align: middle;
+            width: 350px;
+            display: inline-block;
+        }
+
+        .result-block {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border-style: solid;
+            border-width: 2px;
+        }
+
+        #results img {
+            height: 150px;
+            padding: 5px;
+        }
+
+        #progress-container{
+            display: inline-block;
+            width: 400px;
+            height: 30px;
+            padding: 0;
+            background-color: lightgray;
+        }
+
+        #progress-value{
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            background-color: greenyellow;
+            width: 0%;
+            height: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div id="progress">
+        <span>Progress:</span>
+        <span id="progress-container">
+            <span id="progress-value"></span>
+        </span>
+    </div>
+    <h1 id="question">Which do you prefer?</h1>
+    <div id="choices"></div>
+    <div id="results"></div>
+
+    <script>
+
+        // https://stackabuse.com/merge-sort-in-javascript/
+
+        async function merge(left, right) {
+            let arr = []
+            // Break out of loop if any one of the array gets empty
+            while (left.length && right.length) {
+                // Pick the smaller among the smallest element of left and right sub arrays 
+                const comparison = await IsLeftLessThanRight(left[0], right[0]);
+                // if (left[0] < right[0]) {
+                if (comparison) {
+                    arr.push(left.shift())
+                } else {
+                    arr.push(right.shift())
+                }
+            }
+
+            // Concatenating the leftover elements
+            // (in case we didn't go through the entire left or right array)
+            return [...arr, ...left, ...right]
+        }
+
+        // let mergeSortCount = 0;
+
+        async function mergeSort(array) {
+
+            // mergeSortCount++;
+            // console.warn(mergeSortCount);
+
+            const half = array.length / 2
+
+            // Base case or terminating case
+            if (array.length < 2) {
+                // mergeSortCount--;
+                // console.error(mergeSortCount);
+                return array
+            }
+
+            const left = array.splice(0, half)
+            const resultValue = await merge(await mergeSort(left), await mergeSort(array));
+
+            // mergeSortCount--;
+            // console.error(mergeSortCount);
+
+            return resultValue;
+        }
+
+        let counter = 0;
+
+        const IsLeftLessThanRight = function (left, right) {
+
+            ++counter;
+
+            const progressBar = document.getElementById("progress-value");
+            const progressPercentage = ((counter / mergeSortComparisonCountEstimate) * 100)  + "%";
+            // progress.innerHTML = Math.round((counter / mergeSortComparisonCountEstimate) * 100)  + "%"
+            progressBar.style.width = progressPercentage;
+
+            // return Math.round(Math.random()) === 1;
+
+            const parent = document.getElementById("choices");
+            parent.innerHTML = "";
+
+            const leftImg = document.createElement("img");
+            leftImg.src = left;
+            leftImg.className = "choice";
+            parent.appendChild(leftImg);
+
+            const rightImg = document.createElement("img");
+            rightImg.src = right;
+            rightImg.className = "choice";
+            parent.appendChild(rightImg);
+
+            return new Promise((res, rej) => {
+                leftImg.onclick = () => { res(true); }
+                rightImg.onclick = () => { res(false); }
+            });
+        };
+
+        const posters = [
+            "https://upload.wikimedia.org/wikipedia/en/0/02/Iron_Man_%282008_film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/f/f0/The_Incredible_Hulk_%28film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/e/ed/Iron_Man_2_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/9/95/Thor_%28film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/3/37/Captain_America_The_First_Avenger_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/8/8a/The_Avengers_%282012_film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/1/19/Iron_Man_3_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/7/7f/Thor_The_Dark_World_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/9/9e/Captain_America_The_Winter_Soldier_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/3/33/Guardians_of_the_Galaxy_%28film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/f/ff/Avengers_Age_of_Ultron_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/1/12/Ant-Man_%28film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/5/53/Captain_America_Civil_War_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/a/a1/Doctor_Strange_%282016_film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/a/ab/Guardians_of_the_Galaxy_Vol_2_poster.jpg/220px-Guardians_of_the_Galaxy_Vol_2_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/7/7d/Thor_Ragnarok_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/d/d6/Black_Panther_%28film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/4/4d/Avengers_Infinity_War_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/2/2c/Ant-Man_and_the_Wasp_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/4/4e/Captain_Marvel_%28film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/0/0d/Avengers_Endgame_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/b/bd/Spider-Man_Far_From_Home_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/Black_Widow_%282021_film%29_poster.jpg/220px-Black_Widow_%282021_film%29_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/7/74/Shang-Chi_and_the_Legend_of_the_Ten_Rings_poster.jpeg/220px-Shang-Chi_and_the_Legend_of_the_Ten_Rings_poster.jpeg",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Eternals_%28film%29_poster.jpeg/220px-Eternals_%28film%29_poster.jpeg",
+            "https://upload.wikimedia.org/wikipedia/en/0/00/Spider-Man_No_Way_Home_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/1/17/Doctor_Strange_in_the_Multiverse_of_Madness_poster.jpg/220px-Doctor_Strange_in_the_Multiverse_of_Madness_poster.jpg",
+            "https://upload.wikimedia.org/wikipedia/en/thumb/8/88/Thor_Love_and_Thunder_poster.jpeg/220px-Thor_Love_and_Thunder_poster.jpeg",
+
+            "https://m.media-amazon.com/images/I/71nwO6MO0vS._AC_SY741_.jpg",
+            "https://m.media-amazon.com/images/M/MV5BODNiODVmYjItM2MyMC00ZWQyLTgyMGYtNzJjMmVmZTY2OTJjXkEyXkFqcGdeQXVyNzk3NDUzNTc@._V1_.jpg",
+            "https://terrigen-cdn-dev.marvel.com/content/prod/1x/online_9.jpg",
+            "https://media.comicbook.com/2021/07/marvel-what-if-tv-series-poster-official-disney-plus-1274908.jpeg?auto=webp&width=1280&height=1897&crop=1280:1897,smart",
+            "https://terrigen-cdn-dev.marvel.com/content/prod/2x/hawkeye_lob_crd_04.jpg",
+            "https://m.media-amazon.com/images/M/MV5BYTc5OWNhYjktMThlOS00ODUxLTgwNDQtZjdjYjkyM2IwZTZlXkEyXkFqcGdeQXVyNTA3MTU2MjE@._V1_.jpg",
+            "https://terrigen-cdn-dev.marvel.com/content/prod/1x/ms_marvel_0.jpg",
+            "https://terrigen-cdn-dev.marvel.com/content/prod/1x/facebook_twitter_shehulk_payoff_key_art.jpg",
+            "https://m.media-amazon.com/images/M/MV5BZjI3NjI3NDQtY2RmYS00NTJjLWI0YTQtNTE4NmZiN2UzMWJjXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg"
+        ];
+
+        function shuffleArray(array) {
+            // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        const n = posters.length;
+        const mergeSortComparisonCountEstimate = n * Math.log2(n) - (n - 1);
+        // const mergeSortComparisonCount = n * Math.log2(n);
+        console.log(mergeSortComparisonCountEstimate);
+
+        shuffleArray(posters);
+
+        const BLOCK_INTERVAL = 5;
+
+        window.onload = () => {
+
+            // console.warn(`Total: ${posters.length}`);
+
+            // const result = posters;
+            mergeSort(posters).then(result => {
+
+                console.log(`Total: ${result.length}, Choices: ${counter}, Estimate: ${mergeSortComparisonCountEstimate}, Choices/Estimage: ${counter / mergeSortComparisonCountEstimate}`);
+                // 06 : 07
+                // 12 : 20
+                // 23 : 48
+                // 29 : 67
+                // 37 : 90
+                // 37 : 105
+                // 37 : 135
+
+                const progressBar = document.getElementById("progress");
+                progressBar.innerHTML = "";
+
+                const parent = document.getElementById("choices");
+                parent.innerHTML = "";
+
+                const results = document.getElementById("question");
+                results.innerHTML = "Results:";
+
+                const list = document.getElementById("results");
+
+                let block;
+                for (let i in result) {
+                    let index = parseInt(i);
+                    if (index % BLOCK_INTERVAL === 0) {
+                        block = document.createElement("div");
+                        block.className = "result-block";
+                        list.appendChild(block);
+                        let blockText = document.createElement("div");
+                        blockText.className = "block-text";
+                        blockText.innerHTML = `${index + 1} - ${Math.min(index + BLOCK_INTERVAL, result.length)}`;
+                        block.appendChild(blockText);
+                    }
+                    let img = document.createElement("img");
+                    img.src = result[index];
+                    block.appendChild(img);
+                }
+            });
+        };
+
+    </script>
+</body>
+
+</html>
