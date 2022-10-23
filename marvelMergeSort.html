@@ -143,6 +143,28 @@
             });
         };
 
+        const MyColor = function(r,g,b){
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        };
+        MyColor.prototype.ToCssColor = function(){
+            return `rgb(${this.r},${this.g},${this.b})`;
+        };
+
+        const LerpColor = function(colorA, colorB, perc){
+            const result = new MyColor(0,0,0);
+            for(const key in colorA){
+                if(typeof colorA[key] !== "number")
+                    continue;
+                const diff = colorB[key] - colorA[key];
+                result[key] = colorA[key] + (diff * perc);
+            }
+            return result;
+        };
+        const START_COLOR = new MyColor(180, 255, 180);
+        const END_COLOR = new MyColor(255, 150, 150);
+
         const posters = [
             "https://upload.wikimedia.org/wikipedia/en/0/02/Iron_Man_%282008_film%29_poster.jpg",
             "https://upload.wikimedia.org/wikipedia/en/f/f0/The_Incredible_Hulk_%28film%29_poster.jpg",
@@ -229,6 +251,10 @@
 
                 const list = document.getElementById("results");
 
+                const blockCount = Math.ceil(result.length / BLOCK_INTERVAL);
+                const percInterval = 1.0 / (blockCount - 1);
+                let currentPerc = 0;
+
                 let block;
                 for (let i in result) {
                     let index = parseInt(i);
@@ -240,6 +266,10 @@
                         blockText.className = "block-text";
                         blockText.innerHTML = `${index + 1} - ${Math.min(index + BLOCK_INTERVAL, result.length)}`;
                         block.appendChild(blockText);
+
+                        const color = LerpColor(START_COLOR, END_COLOR, currentPerc);
+                        block.style.backgroundColor = color.ToCssColor();
+                        currentPerc += percInterval;
                     }
                     let img = document.createElement("img");
                     img.src = result[index];
